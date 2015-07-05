@@ -1,0 +1,83 @@
+<html>
+    <head>
+		<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+        <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery.csv-0.71.min.js"></script>
+		<script type="text/javascript" src="js/Chart.js"></script>
+        <script type="text/javascript">
+			var csvUrl = "./traffic.csv";
+			var iodata;
+			var data = {
+				labels: [],
+				datasets: [
+					{
+						label: "Download Speed",
+						fillColor: "rgba(220,220,220,0.2)",
+						strokeColor: "rgba(220,220,220,1)",
+						pointColor: "rgba(220,220,220,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(220,220,220,1)",
+						data: []
+					},
+					{
+						label: "Upload Speed",
+						fillColor: "rgba(151,187,205,0.2)",
+						strokeColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(151,187,205,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(151,187,205,1)",
+						data: []
+					}
+				]
+			};
+
+			$(function() {
+				processCSV(csvUrl);
+			});
+
+			$(window).resize(function(){
+				processCSV(csvUrl);
+			})
+
+			window.setInterval(function(){ processCSV(csvUrl); }, 60000);
+
+			function processCSV(url) {
+				$.ajax({
+					url: url,
+					datatype: "text",
+					success: function(response){
+						iodata = $.csv2Array(response);
+						//console.log( iodata );
+						data.labels.length = 0;
+						data.datasets[0].data.length = 0;
+						data.datasets[1].data.length = 0;
+						$.each(iodata, function(key,val){
+							if(key%5 == 0)
+								data.labels.push(val[0]);
+							else
+								data.labels.push("");
+							data.datasets[0].data.push(val[3]);
+							data.datasets[1].data.push(val[2]);
+						});
+					},
+					complete: function () {
+						var canvas_width = $(window).innerWidth()-10;
+						var canvas_height = $(window).innerHeight()-20;
+						console.log(canvas_width, canvas_height);
+						$("#speedChart").replaceWith('<canvas id="speedChart" width="'+canvas_width+'" height="'+canvas_height+'"></canvas>');
+						var ctx = $("#speedChart").get(0).getContext("2d");
+						var speedChart = new Chart(ctx).Line(data,{
+							animation: false,
+							});
+					}
+				});
+			}
+        </script>
+    </head>
+	<body style="margin:5px;overflow:hidden">
+		<canvas id="speedChart" ></canvas>
+    </body>
+</html>

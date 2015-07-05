@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<title>Databox Network IO Chart</title>
+		<script>
+			function popitup(link) {
+			  var w = window.open(link, "_blank",
+					'menubar=no,toolbar=no,location=no,directories=no,status=no,scrollbars=no,resizable=no,dependent,width=300,height=300,left=0,top=0');
+			  return w?false:true; // allow the link to work if popup is blocked
+			}
+			window.onload = function(e){
+				popitup("chart.html");
+				console.log("Invoke popup");
+			}
+		</script>
+	</head>
+	<body></body>
+</html>
