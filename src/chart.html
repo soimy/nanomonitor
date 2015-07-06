@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
 		<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width">
@@ -12,7 +13,7 @@
 				labels: [],
 				datasets: [
 					{
-						label: "Download Speed",
+						label: "Upload Speed",
 						fillColor: "rgba(220,220,220,0.2)",
 						strokeColor: "rgba(220,220,220,1)",
 						pointColor: "rgba(220,220,220,1)",
@@ -22,10 +23,10 @@
 						data: []
 					},
 					{
-						label: "Upload Speed",
-						fillColor: "rgba(151,187,205,0.2)",
+						label: "Download Speed",
+						fillColor: "rgba(151,187,205,0.3)",
 						strokeColor: "rgba(151,187,205,1)",
-						pointColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(51,187,205,1)",
 						pointStrokeColor: "#fff",
 						pointHighlightFill: "#fff",
 						pointHighlightStroke: "rgba(151,187,205,1)",
@@ -55,22 +56,24 @@
 						data.datasets[0].data.length = 0;
 						data.datasets[1].data.length = 0;
 						$.each(iodata, function(key,val){
-							if(key%5 == 0)
-								data.labels.push(val[0]);
-							else
-								data.labels.push("");
+							data.labels.push(val[0]);
 							data.datasets[0].data.push(val[3]);
 							data.datasets[1].data.push(val[2]);
 						});
 					},
 					complete: function () {
-						var canvas_width = $(window).innerWidth()-10;
-						var canvas_height = $(window).innerHeight()-20;
-						console.log(canvas_width, canvas_height);
+						var canvas_width = $(window).width()-10;
+						var canvas_height = $(window).height()-10;
+						//console.log(canvas_width, canvas_height);
 						$("#speedChart").replaceWith('<canvas id="speedChart" width="'+canvas_width+'" height="'+canvas_height+'"></canvas>');
 						var ctx = $("#speedChart").get(0).getContext("2d");
 						var speedChart = new Chart(ctx).Line(data,{
 							animation: false,
+							scaleFontSize: 10,
+							scaleStep: 5,
+							tooltipFontSize: 10,
+							tooltipTitleFontSize: 10,
+							maintainAspestRatio: false
 							});
 					}
 				});
